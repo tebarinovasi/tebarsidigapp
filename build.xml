@@ -1,0 +1,41 @@
+<project name="WebViewApp" default="debug">
+    <property name="sdk.dir" value="/data/data/com.termux/files/usr/share/android-sdk"/>
+    
+    <target name="debug">
+        <exec executable="aapt" failonerror="true">
+            <arg value="package"/>
+            <arg value="-f"/>
+            <arg value="-M"/>
+            <arg value="AndroidManifest.xml"/>
+            <arg value="-S"/>
+            <arg value="res"/>
+            <arg value="-I"/>
+            <arg value="${sdk.dir}/platforms/android-33/android.jar"/>
+            <arg value="-F"/>
+            <arg value="bin/resources.ap_"/>
+        </exec>
+        
+        <exec executable="javac" failonerror="true">
+            <arg value="-d"/>
+            <arg value="bin/classes"/>
+            <arg value="-classpath"/>
+            <arg value="${sdk.dir}/platforms/android-33/android.jar"/>
+            <arg value="src/com/example/webviewapp/MainActivity.java"/>
+        </exec>
+        
+        <exec executable="dx" failonerror="true">
+            <arg value="--dex"/>
+            <arg value="--output=bin/classes.dex"/>
+            <arg value="bin/classes"/>
+        </exec>
+        
+        <exec executable="apkbuilder" failonerror="true">
+            <arg value="bin/webview_app.apk"/>
+            <arg value="-u"/>
+            <arg value="-z"/>
+            <arg value="bin/resources.ap_"/>
+            <arg value="-f"/>
+            <arg value="bin/classes.dex"/>
+        </exec>
+    </target>
+</project>
